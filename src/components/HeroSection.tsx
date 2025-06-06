@@ -2,10 +2,20 @@
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from '@/components/ui/carousel';
 import { useState, useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const HeroSection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+    });
+  }, []);
 
   const slides = [
     {
@@ -106,27 +116,27 @@ const HeroSection = () => {
                   style={{ backgroundImage: `url('${slide.image}')` }}
                 ></div>
                 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-10">
-                  <div className="max-w-3xl animate-fade-in">
-                    <div className="mb-4">
-                      <span className="inline-block bg-wine-red text-white px-4 py-2 rounded-full text-sm font-semibold">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 z-10 w-full">
+                  <div className="max-w-2xl md:max-w-3xl animate-fade-in">
+                    <div className="mb-3 md:mb-4" data-aos="fade-up" data-aos-delay="200">
+                      <span className="inline-block bg-wine-red text-white px-3 py-1 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-semibold">
                         {slide.subtitle}
                       </span>
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-white">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6 leading-tight text-white" data-aos="fade-up" data-aos-delay="400">
                       {slide.title.split(' ').map((word, i) => (
                         <span key={i} className={i === slide.title.split(' ').length - 1 ? "block text-wine-red" : ""}>
                           {word}{i !== slide.title.split(' ').length - 1 ? ' ' : ''}
                         </span>
                       ))}
                     </h1>
-                    <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 text-gray-200 leading-relaxed" data-aos="fade-up" data-aos-delay="600">
                       {slide.description}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4" data-aos="fade-up" data-aos-delay="800">
                       <Button 
                         size="lg" 
-                        className="bg-wine-red hover:bg-wine-red/90 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
+                        className="bg-wine-red hover:bg-wine-red/90 text-white px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-semibold transition-all duration-300 hover:scale-105"
                         onClick={() => handleSlideClick(slide.cta)}
                       >
                         {slide.cta}
@@ -134,7 +144,7 @@ const HeroSection = () => {
                       <Button 
                         size="lg" 
                         variant="outline" 
-                        className="border-white text-wine-red hover:bg-white hover:text-secondary px-8 py-4 text-lg font-semibold transition-all duration-300"
+                        className="border-white text-wine-red hover:bg-white hover:text-secondary px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-semibold transition-all duration-300"
                         onClick={() => document.getElementById('players')?.scrollIntoView({ behavior: 'smooth' })}
                       >
                         View Players
@@ -146,17 +156,17 @@ const HeroSection = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-4 w-12 h-12 bg-wine-red/80 text-white border-wine-red hover:bg-wine-red hover:border-wine-red backdrop-blur-sm" />
-        <CarouselNext className="right-4 w-12 h-12 bg-wine-red/80 text-white border-wine-red hover:bg-wine-red hover:border-wine-red backdrop-blur-sm" />
+        <CarouselPrevious className="left-2 md:left-4 w-10 h-10 md:w-12 md:h-12 bg-wine-red/80 text-white border-wine-red hover:bg-wine-red hover:border-wine-red backdrop-blur-sm" />
+        <CarouselNext className="right-2 md:right-4 w-10 h-10 md:w-12 md:h-12 bg-wine-red/80 text-white border-wine-red hover:bg-wine-red hover:border-wine-red backdrop-blur-sm" />
       </Carousel>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+      <div className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20" data-aos="fade-up" data-aos-delay="1000">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => handleIndicatorClick(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
               index === activeSlide ? 'bg-wine-red' : 'bg-white/50'
             }`}
           />
