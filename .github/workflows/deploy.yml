@@ -46,10 +46,10 @@ jobs:
           # Deploy using rsync for efficient syncing
           rsync -avz --delete \
             -e "ssh -p 21098 -o StrictHostKeyChecking=no" \
-            build/ $SSH_USER@$SSH_HOST:$DEPLOY_PATH/
+            build/ $SSH_USER@$CPANEL_HOST:$DEPLOY_PATH/
           
           # Verify deployment
-          ssh -p 21098 $SSH_USER@$SSH_HOST "ls -la $DEPLOY_PATH"
+          ssh -p 21098 $SSH_USER@$CPANEL_HOST "ls -la $DEPLOY_PATH"
         
       # - name: Set up SSH
       #   run: |
