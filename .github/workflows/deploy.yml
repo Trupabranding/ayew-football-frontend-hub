@@ -35,18 +35,29 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H -p 21098 "${{ secrets.CPANEL_HOST }}" >> ~/.ssh/known_hosts
-      
-      - name: Deploy Application with rsync
+          
+          # Debug: Check the key
+          echo "=== SSH Key Check ==="
+          head -1 ~/.ssh/id_rsa
+          tail -1 ~/.ssh/id_rsa
+          
+          # Add host key
+          ssh-keyscan -p 21098 -H ${{ secrets.CPANEL_HOST }} >> ~/.ssh/known_hosts
+          
+      - name: Test SSH Connection (Debug)
         env:
           CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          # Test with verbose output
+          ssh -p 21098 -o StrictHostKeyChecking=no -o PreferredAuthentications=publickey -vvv mafadmpc@$CPANEL_HOST "whoami"
+          
+      - name: Deploy Application
+        env:
+          CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
         run: |
           rsync -avz --progress --delete \
-            -e "ssh -p 21098 -o StrictHostKeyChecking=no" \
-            build/ $SSH_USER@$CPANEL_HOST:$DEPLOY_PATH/
-          ssh -p 21098 $SSH_USER@$CPANEL_HOST "ls -la $DEPLOY_PATH"
+            -e "ssh -p 21098 -o StrictHostKeyChecking=no -o PreferredAuthentications=publickey" \
+            build/ mafadmpc@$CPANEL_HOST:/home/mafadmpc/academy/staging/
 
 
               
