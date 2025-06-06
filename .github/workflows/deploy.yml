@@ -31,9 +31,9 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa-v1
-          chmod 600 ~/.ssh/id_rsa-v1
-          echo -e "Host cpanel\n\tUser mafadmpc\n\tHostname ${{ secrets.CPANEL_HOST }}\n\tPort 21098\n\tIdentityFile ~/.ssh/id_rsa-v1\n\tStrictHostKeyChecking no" > ~/.ssh/config
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo -e "Host cpanel\n\tUser mafadmpc\n\tHostname ${{ secrets.CPANEL_HOST }}\n\tPort 21098\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
           
       - name: Deploy to cPanel
         uses: easingthemes/ssh-deploy@v5.1.0
@@ -43,7 +43,7 @@ jobs:
           REMOTE_USER: "mafadmpc"
           TARGET: "/home/mafadmpc/academy/staging/"
           ARGS: "-rlgoDzvc --delete"
-          
+
 # Uncomment the following lines if you want to use rsync directly instead of easingthemes/ssh-deploy
 # name: Deploy to cPanel
 
