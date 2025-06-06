@@ -36,37 +36,36 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H -p 21098 "${{ secrets.CPANEL_HOST }}" >> ~/.ssh/known_hosts
-          
+      
       - name: Deploy Application with rsync
         env:
           CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          # Deploy using rsync for efficient syncing
-          rsync -avz --delete \
+          rsync -avz --progress --delete \
             -e "ssh -p 21098 -o StrictHostKeyChecking=no" \
             build/ $SSH_USER@$CPANEL_HOST:$DEPLOY_PATH/
-          
-          # Verify deployment
           ssh -p 21098 $SSH_USER@$CPANEL_HOST "ls -la $DEPLOY_PATH"
-        
-      # - name: Set up SSH
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     echo -e "Host cpanel\n\tUser mafadmpc\n\tHostname ${{ secrets.CPANEL_HOST }}\n\tPort 21098\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
-          
-      # - name: Deploy to cPanel
-      #   uses: easingthemes/ssh-deploy@v5.1.0
-      #   with:
-      #     SOURCE: "build/"   
-      #     REMOTE_HOST: "cpanel"
-      #     REMOTE_USER: "mafadmpc"
-      #     TARGET: "/home/mafadmpc/academy/staging/"
-      #     ARGS: "-rlgoDzvc --delete"
-      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+
+              
+            # - name: Set up SSH
+            #   run: |
+            #     mkdir -p ~/.ssh
+            #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            #     chmod 600 ~/.ssh/id_rsa
+            #     echo -e "Host cpanel\n\tUser mafadmpc\n\tHostname ${{ secrets.CPANEL_HOST }}\n\tPort 21098\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
+                
+            # - name: Deploy to cPanel
+            #   uses: easingthemes/ssh-deploy@v5.1.0
+            #   with:
+            #     SOURCE: "build/"   
+            #     REMOTE_HOST: "cpanel"
+            #     REMOTE_USER: "mafadmpc"
+            #     TARGET: "/home/mafadmpc/academy/staging/"
+            #     ARGS: "-rlgoDzvc --delete"
+            #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
 
 # Uncomment the following lines if you want to use rsync directly instead of easingthemes/ssh-deploy
