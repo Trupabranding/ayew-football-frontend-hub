@@ -33,7 +33,7 @@ const Index = () => {
       <div className="bg-gray-50" data-aos="fade-up">
         <AboutSection />
       </div>
-      <div className="bg-black" data-aos="fade-up">
+      <div className="bg-wine-red" data-aos="fade-up">
         <PlayersSection />
       </div>
       <div className="bg-gray-50" data-aos="fade-up">

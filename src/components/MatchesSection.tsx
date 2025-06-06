@@ -1,8 +1,21 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, MapPin, Trophy } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar, Clock, MapPin, Trophy, ExternalLink } from 'lucide-react';
+import { useEffect } from 'react';
+import AOS from 'aos';
 
 const MatchesSection = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
+
   const upcomingMatches = [
     {
       id: 1,
@@ -44,61 +57,97 @@ const MatchesSection = () => {
       competition: "Friendly",
       isHome: false,
       scorers: ["E. Tetteh", "K. Asante"]
+    },
+    {
+      id: 3,
+      opponent: "Volta Stars FC",
+      date: "2024-05-14",
+      homeScore: 4,
+      awayScore: 0,
+      competition: "Youth League",
+      isHome: true,
+      scorers: ["K. Asante (3)", "S. Boateng"]
+    },
+    {
+      id: 4,
+      opponent: "Ashanti Rovers",
+      date: "2024-05-07",
+      homeScore: 1,
+      awayScore: 3,
+      competition: "Regional Cup",
+      isHome: false,
+      scorers: ["J. Mensah"]
+    },
+    {
+      id: 5,
+      opponent: "Northern Stars",
+      date: "2024-04-30",
+      homeScore: 2,
+      awayScore: 1,
+      competition: "Youth League",
+      isHome: true,
+      scorers: ["E. Tetteh", "K. Asante"]
     }
   ];
 
   return (
-    <section id="matches" className="py-20 bg-gray-50">
+    <section id="matches" className="py-12 md:py-20 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-secondary mb-6">
+        <div className="text-center mb-12 md:mb-16" data-aos="fade-up">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6">
             Matches
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             Follow our upcoming fixtures and recent results as we compete 
             against top academies across the region.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="space-y-12 lg:space-y-16">
           {/* Upcoming Matches */}
-          <div>
-            <h3 className="text-2xl font-bold text-secondary mb-8 flex items-center">
-              <Calendar className="mr-3 text-wine-red" size={24} />
-              Upcoming Matches
-            </h3>
-            <div className="space-y-6">
-              {upcomingMatches.map((match) => (
-                <Card key={match.id} className="hover:shadow-lg transition-shadow duration-300">
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h4 className="font-bold text-lg text-secondary">
-                          {match.isHome ? 'Mafarah Ayew' : match.opponent}
-                          <span className="mx-2 text-wine-red">vs</span>
-                          {match.isHome ? match.opponent : 'Mafarah Ayew'}
+          <div data-aos="fade-up" data-aos-delay="200">
+            <div className="flex items-center justify-between mb-6 md:mb-8">
+              <h3 className="text-2xl md:text-3xl font-bold text-white flex items-center">
+                <Calendar className="mr-3 text-wine-red" size={28} />
+                Upcoming Matches
+              </h3>
+            </div>
+            <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+              {upcomingMatches.map((match, index) => (
+                <Card key={match.id} className="bg-gray-900 border-gray-800 hover:bg-gray-800 transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay={300 + index * 100}>
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+                      <div className="flex-1">
+                        <h4 className="font-bold text-lg md:text-xl text-white mb-2">
+                          <span className={match.isHome ? "text-wine-red" : "text-white"}>
+                            {match.isHome ? 'Mafarah Ayew' : match.opponent}
+                          </span>
+                          <span className="mx-2 text-wine-red font-bold">VS</span>
+                          <span className={!match.isHome ? "text-wine-red" : "text-white"}>
+                            {match.isHome ? match.opponent : 'Mafarah Ayew'}
+                          </span>
                         </h4>
-                        <Badge variant="outline" className="mt-2">
+                        <Badge variant="outline" className="border-wine-red text-wine-red mb-3">
                           {match.competition}
                         </Badge>
                       </div>
-                      <Badge className={match.isHome ? "bg-wine-red" : "bg-gray-500"}>
+                      <Badge className={`${match.isHome ? "bg-wine-red hover:bg-wine-red/90" : "bg-gray-600 hover:bg-gray-500"} text-white`}>
                         {match.isHome ? "Home" : "Away"}
                       </Badge>
                     </div>
                     
-                    <div className="space-y-2 text-gray-600">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-gray-300">
                       <div className="flex items-center">
-                        <Calendar size={16} className="mr-2" />
+                        <Calendar size={16} className="mr-2 text-wine-red flex-shrink-0" />
                         <span>{new Date(match.date).toLocaleDateString()}</span>
                       </div>
                       <div className="flex items-center">
-                        <Clock size={16} className="mr-2" />
+                        <Clock size={16} className="mr-2 text-wine-red flex-shrink-0" />
                         <span>{match.time}</span>
                       </div>
                       <div className="flex items-center">
-                        <MapPin size={16} className="mr-2" />
-                        <span>{match.venue}</span>
+                        <MapPin size={16} className="mr-2 text-wine-red flex-shrink-0" />
+                        <span className="truncate">{match.venue}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -108,40 +157,54 @@ const MatchesSection = () => {
           </div>
 
           {/* Recent Results */}
-          <div>
-            <h3 className="text-2xl font-bold text-secondary mb-8 flex items-center">
-              <Trophy className="mr-3 text-wine-red" size={24} />
-              Recent Results
-            </h3>
-            <div className="space-y-6">
-              {recentResults.map((match) => (
-                <Card key={match.id} className="hover:shadow-lg transition-shadow duration-300">
-                  <CardContent className="p-6">
+          <div data-aos="fade-up" data-aos-delay="400">
+            <div className="flex items-center justify-between mb-6 md:mb-8">
+              <h3 className="text-2xl md:text-3xl font-bold text-white flex items-center">
+                <Trophy className="mr-3 text-wine-red" size={28} />
+                Recent Results
+              </h3>
+              <Button variant="outline" className="border-wine-red text-wine-red hover:bg-wine-red hover:text-white transition-colors">
+                <ExternalLink size={16} className="mr-2" />
+                View All Matches
+              </Button>
+            </div>
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {recentResults.map((match, index) => (
+                <Card key={match.id} className="bg-gray-900 border-gray-800 hover:bg-gray-800 transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay={500 + index * 100}>
+                  <CardContent className="p-4 md:p-6">
                     <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h4 className="font-bold text-lg text-secondary mb-2">
-                          {match.isHome ? 'Mafarah Ayew' : match.opponent}
-                          <span className="mx-4 text-2xl font-bold text-wine-red">
-                            {match.isHome ? match.homeScore : match.awayScore}
+                      <div className="flex-1">
+                        <div className="text-center mb-3">
+                          <div className="font-bold text-sm md:text-base text-white mb-2">
+                            {match.isHome ? 'Mafarah Ayew' : match.opponent}
+                          </div>
+                          <div className="flex items-center justify-center space-x-4 text-2xl md:text-3xl font-bold">
+                            <span className={`${(match.isHome && match.homeScore > match.awayScore) || (!match.isHome && match.awayScore > match.homeScore) ? 'text-green-400' : match.homeScore === match.awayScore ? 'text-yellow-400' : 'text-red-400'}`}>
+                              {match.isHome ? match.homeScore : match.awayScore}
+                            </span>
+                            <span className="text-gray-400 text-lg">-</span>
+                            <span className={`${(match.isHome && match.awayScore > match.homeScore) || (!match.isHome && match.homeScore > match.awayScore) ? 'text-green-400' : match.homeScore === match.awayScore ? 'text-yellow-400' : 'text-red-400'}`}>
+                              {match.isHome ? match.awayScore : match.homeScore}
+                            </span>
+                          </div>
+                          <div className="font-bold text-sm md:text-base text-white mt-2">
+                            {match.isHome ? match.opponent : 'Mafarah Ayew'}
+                          </div>
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                          <Badge variant="outline" className="border-wine-red text-wine-red text-xs w-fit">
+                            {match.competition}
+                          </Badge>
+                          <span className="text-xs text-gray-400">
+                            {new Date(match.date).toLocaleDateString()}
                           </span>
-                          <span className="text-gray-400">-</span>
-                          <span className="mx-4 text-2xl font-bold text-wine-red">
-                            {match.isHome ? match.awayScore : match.homeScore}
-                          </span>
-                          {match.isHome ? match.opponent : 'Mafarah Ayew'}
-                        </h4>
-                        <Badge variant="outline" className="mb-2">
-                          {match.competition}
-                        </Badge>
+                        </div>
                       </div>
-                      <span className="text-sm text-gray-500">
-                        {new Date(match.date).toLocaleDateString()}
-                      </span>
                     </div>
                     
                     {match.scorers && (
-                      <div className="text-sm text-gray-600">
-                        <span className="font-semibold">Scorers: </span>
+                      <div className="text-xs text-gray-300 bg-gray-800 p-2 rounded">
+                        <span className="font-semibold text-wine-red">Scorers: </span>
                         {match.scorers.join(', ')}
                       </div>
                     )}
