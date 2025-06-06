@@ -43,7 +43,7 @@ jobs:
           REMOTE_USER: "mafadmpc"
           TARGET: "/home/mafadmpc/academy/staging/"
           ARGS: "-rlgoDzvc --delete"
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
 
 # Uncomment the following lines if you want to use rsync directly instead of easingthemes/ssh-deploy
