@@ -146,8 +146,8 @@ const HeroSection = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-4 text-white border-white hover:bg-wine-red hover:border-wine-red" />
-        <CarouselNext className="right-4 text-white border-white hover:bg-wine-red hover:border-wine-red" />
+        <CarouselPrevious className="left-4 w-12 h-12 bg-wine-red/80 text-white border-wine-red hover:bg-wine-red hover:border-wine-red backdrop-blur-sm" />
+        <CarouselNext className="right-4 w-12 h-12 bg-wine-red/80 text-white border-wine-red hover:bg-wine-red hover:border-wine-red backdrop-blur-sm" />
       </Carousel>
 
       {/* Slide indicators */}
