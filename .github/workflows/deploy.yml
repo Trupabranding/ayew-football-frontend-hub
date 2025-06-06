@@ -11,31 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
+        
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
-
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Clear npm cache
+        run: npm cache clean --force
+        
       - name: Install dependencies
-        run: npm install
-
+        run: npm ci --only=production
+        env:
+          NODE_ENV: production
+        
       - name: Build React App
-        run: npm run build
-
+        run: npm run build --if-present
+        
       - name: Set up SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa-v1
-          chmod 600 ~/.ssh/id_rsa-v1
-          echo -e "Host cpanel\n\tUser mafadmpc\n\tHostname ${{ secrets.CPANEL_HOST }}\n\tPort 21098\n\tIdentityFile ~/.ssh/id_rsa-v1\n\tStrictHostKeyChecking no" > ~/.ssh/config
-
-      - name: Deploy to cPanel
-        uses: easingthemes/ssh-deploy@v5.1.0
+        uses: webfactory/ssh-agent@v1
         with:
-          SOURCE: "build/"
-          REMOTE_HOST: "cpanel"
-          REMOTE_USER: "mafadmpc"
-          TARGET: "/home/mafadmpc/academy/staging/"
-          ARGS: "-rlgoDzvc --delete"
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+      - name: Deploy to cPanel
+        run: rsync -rlgoDzvc --delete build/ mafadmpc@${{ secrets.CPANEL_HOST }}:~/academy/staging/
