@@ -33,12 +33,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          echo -e "Host cpanel\n\tUser mafadmpc\n\tHostname ${{ secrets.CPANEL_HOST }}\n\tPort 21098\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
+          echo -e "Host cpanel\n\tUser mafadmpc\n\tHostname ${{ secrets.CPANEL_HOST }}\n\tPort 22\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
           
       - name: Deploy to cPanel
         uses: easingthemes/ssh-deploy@v5.1.0
         with:
-          SOURCE: "build/"
+          SOURCE: "build/"   
           REMOTE_HOST: "cpanel"
           REMOTE_USER: "mafadmpc"
           TARGET: "/home/mafadmpc/academy/staging/"
