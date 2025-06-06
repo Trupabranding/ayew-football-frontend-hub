@@ -8,38 +8,38 @@ const HeroSection = () => {
 
   const slides = [
     {
-      title: "Elite Football Development",
+      title: "Elite Football Academy",
       subtitle: "Professional Training Program",
-      description: "Nurturing tomorrow's football stars through world-class training and development programs.",
+      description: "Developing the next generation of football stars through world-class coaching, modern facilities, and comprehensive player development programs.",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=1920",
       cta: "Join Academy"
     },
     {
-      title: "Investment Opportunities",
+      title: "Smart Investment Hub",
       subtitle: "Partner With Champions",
-      description: "Invest in our academy, teams, and players while earning attractive returns on your investment.",
-      image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1920",
+      description: "Join our investment platform to support talented young players while earning attractive returns through strategic football development investments.",
+      image: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&q=80&w=1920",
       cta: "Explore Investments"
     },
     {
-      title: "Community Impact",
-      subtitle: "NGO & Social Programs",
-      description: "Supporting communities through sports, education, and youth development initiatives across Ghana.",
-      image: "https://images.unsplash.com/photo-1594736797933-d0b22d3180c2?auto=format&fit=crop&q=80&w=1920",
+      title: "Community Empowerment",
+      subtitle: "NGO & Social Impact",
+      description: "Making a difference in Ghanaian communities through sports education, youth mentorship, and sustainable development programs.",
+      image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=1920",
       cta: "Make a Donation"
     },
     {
-      title: "Professional Matches",
+      title: "Championship Matches",
       subtitle: "Competitive Excellence",
-      description: "Watch our teams compete against top academies and showcase their developing talent.",
-      image: "https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&q=80&w=1920",
+      description: "Experience thrilling football action as our academy teams compete in regional and national tournaments, showcasing emerging talent.",
+      image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1920",
       cta: "View Matches"
     },
     {
-      title: "Latest News & Updates",
-      subtitle: "Stay Connected",
-      description: "Follow our players' journeys, academy updates, and success stories from the field.",
-      image: "https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?auto=format&fit=crop&q=80&w=1920",
+      title: "Success Stories",
+      subtitle: "Latest Updates",
+      description: "Follow inspiring journeys of our players, academy achievements, and breakthrough moments that define our commitment to excellence.",
+      image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80&w=1920",
       cta: "Read News"
     }
   ];
@@ -78,7 +78,7 @@ const HeroSection = () => {
           {slides.map((slide, index) => (
             <CarouselItem key={index} className="relative">
               <div className="relative min-h-screen flex items-center">
-                <div className="absolute inset-0 bg-black/50"></div>
+                <div className="absolute inset-0 bg-black/70"></div>
                 <div 
                   className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
                   style={{ backgroundImage: `url('${slide.image}')` }}
