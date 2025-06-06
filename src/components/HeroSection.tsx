@@ -1,10 +1,11 @@
 
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from '@/components/ui/carousel';
 import { useState, useEffect } from 'react';
 
 const HeroSection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [api, setApi] = useState<CarouselApi>();
 
   const slides = [
     {
@@ -45,11 +46,26 @@ const HeroSection = () => {
   ];
 
   useEffect(() => {
+    if (!api) return;
+
+    // Set up auto-sliding
     const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % slides.length);
+      api.scrollNext();
     }, 5000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
+
+    // Listen for slide changes to update activeSlide
+    const onSelect = () => {
+      setActiveSlide(api.selectedScrollSnap());
+    };
+
+    api.on("select", onSelect);
+    onSelect(); // Set initial state
+
+    return () => {
+      clearInterval(timer);
+      api.off("select", onSelect);
+    };
+  }, [api]);
 
   const handleSlideClick = (cta: string) => {
     switch (cta) {
@@ -71,9 +87,15 @@ const HeroSection = () => {
     }
   };
 
+  const handleIndicatorClick = (index: number) => {
+    if (api) {
+      api.scrollTo(index);
+    }
+  };
+
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
-      <Carousel className="w-full h-screen">
+      <Carousel className="w-full h-screen" setApi={setApi} opts={{ loop: true }}>
         <CarouselContent>
           {slides.map((slide, index) => (
             <CarouselItem key={index} className="relative">
@@ -112,7 +134,7 @@ const HeroSection = () => {
                       <Button 
                         size="lg" 
                         variant="outline" 
-                        className="border-white text-white hover:bg-white hover:text-secondary px-8 py-4 text-lg font-semibold transition-all duration-300"
+                        className="border-white text-wine-red hover:bg-white hover:text-secondary px-8 py-4 text-lg font-semibold transition-all duration-300"
                         onClick={() => document.getElementById('players')?.scrollIntoView({ behavior: 'smooth' })}
                       >
                         View Players
@@ -133,7 +155,7 @@ const HeroSection = () => {
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setActiveSlide(index)}
+            onClick={() => handleIndicatorClick(index)}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
               index === activeSlide ? 'bg-wine-red' : 'bg-white/50'
             }`}
