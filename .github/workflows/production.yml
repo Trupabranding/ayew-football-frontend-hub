@@ -26,15 +26,17 @@ jobs:
         run: npm install
 
       - name: Build React App
-        run: npm run build
-
+        run: |
+          npm run build || exit 1 # Ensure build fails if there's an error
+          ls dist || (echo "Build output directory 'dist/' not found!" && exit 1)
+      
       - name: Commit Build to Production Branch
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git checkout production || git checkout -b production
           rm -rf *  # Clear existing files in production branch
-          cp -r dist/* .  # Copy build files to root
+          mkdir -p dist && cp -r dist/* . || (echo "No files to copy from 'dist/'!" && exit 1)
           git add .
           git commit -m "Deploy build from live branch" || echo "No changes to commit"
           git push origin production --force
