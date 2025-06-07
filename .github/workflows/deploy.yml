@@ -47,10 +47,10 @@ jobs:
           echo "Starting deployment..."
           rsync -avz --progress --delete \
             -e "ssh -p 21098 -o StrictHostKeyChecking=no" \
-            build/ mafadmpc@$CPANEL_HOST:/home/mafadmpc/academy/staging/
+            build/ mafadmpc@$CPANEL_HOST:/academy/staging/
           
           echo "Deployment completed. Verifying..."
-          ssh -p 21098 mafadmpc@$CPANEL_HOST "ls -la /home/mafadmpc/academy/staging/"
+          ssh -p 21098 mafadmpc@$CPANEL_HOST "ls -la /academy/staging/"
 
           
       # - name: Setup SSH
