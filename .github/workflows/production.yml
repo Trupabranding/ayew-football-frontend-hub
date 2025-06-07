@@ -35,8 +35,8 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git checkout production || git checkout -b production
-          rm -rf *  # Clear existing files in production branch
-          mkdir -p dist && cp -r dist/* . || (echo "No files to copy from 'dist/'!" && exit 1)
+          find . -mindepth 1 -maxdepth 1 ! -name 'dist' ! -name '.git' ! -name '.github' -exec rm -rf {} +
+          cp -r dist/* .
           git add .
           git commit -m "Deploy build from live branch" || echo "No changes to commit"
           git push origin production --force
