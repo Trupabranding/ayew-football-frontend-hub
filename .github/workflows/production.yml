@@ -1,0 +1,54 @@
+name: Build and Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - live
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build React App
+        run: npm run build
+
+      - name: Commit Build to Production Branch
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git checkout production || git checkout -b production
+          rm -rf *  # Clear existing files in production branch
+          cp -r build/* .  # Copy build files to root
+          git add .
+          git commit -m "Deploy build from live branch" || echo "No changes to commit"
+          git push origin production --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to cPanel via SFTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SFTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./build/
+          server-dir: ${{ secrets.DEPLOY_PATH }}
+          protocol: sftp
+          port: ${{ secrets.SFTP_PORT }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
