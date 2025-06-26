@@ -27,19 +27,28 @@ const DonationSection = () => {
     {
       title: 'Equipment & Facilities',
       description: 'Provide quality training equipment and maintain our facilities',
-      image: 'https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&q=80&w=400'
+      image: 'https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&q=80&w=400',
+      fallbackImage: '/images/equipment-fallback.jpg'
     },
     {
       title: 'Player Development',
       description: 'Support young athletes with training, nutrition, and education',
-      image: 'https://images.unsplash.com/photo-1594736797933-d0b22d3180c2?auto=format&fit=crop&q=80&w=400'
+      image: 'https://images.unsplash.com/photo-1594736797933-d0b22d3180c2?auto=format&fit=crop&q=80&w=400',
+      fallbackImage: '/images/development-fallback.jpg'
     },
     {
       title: 'Community Programs',
       description: 'Expand our reach to underserved communities across Ghana',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&q=80&w=400'
+      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&q=80&w=400',
+      fallbackImage: '/images/community-fallback.jpg'
     }
   ];
+
+  const [imageErrors, setImageErrors] = useState<{[key: number]: boolean}>({});
+
+  const handleImageError = (index: number) => {
+    setImageErrors(prev => ({ ...prev, [index]: true }));
+  };
 
   const handleDonationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,11 +82,26 @@ const DonationSection = () => {
             <div className="space-y-4 md:space-y-6">
               {impactAreas.map((area, index) => (
                 <Card key={index} className="flex flex-col sm:flex-row items-start sm:items-center p-4 hover:shadow-lg transition-all duration-300 bg-white/90 backdrop-blur-sm" data-aos="fade-up" data-aos-delay={index * 100}>
-                  <img
-                    src={area.image}
-                    alt={area.title}
-                    className="w-full sm:w-16 h-32 sm:h-16 rounded-lg object-cover mb-3 sm:mb-0 sm:mr-4 flex-shrink-0"
-                  />
+                  <div className="relative w-full h-48 overflow-hidden rounded-t-lg bg-gray-100">
+                    <img 
+                      src={imageErrors[index] ? area.fallbackImage : area.image}
+                      alt={area.title}
+                      className="w-full h-full object-cover transition-opacity duration-300"
+                      loading="lazy"
+                      onError={() => handleImageError(index)}
+                      onLoad={(e) => {
+                        // Ensure smooth loading
+                        const target = e.target as HTMLImageElement;
+                        target.style.opacity = '1';
+                      }}
+                      style={{ opacity: 0 }}
+                    />
+                    {imageErrors[index] && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <span className="text-gray-400">{area.title} Image</span>
+                      </div>
+                    )}
+                  </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-wine-red text-sm md:text-base">{area.title}</h4>
                     <p className="text-xs md:text-sm text-gray-600 mt-1">{area.description}</p>
