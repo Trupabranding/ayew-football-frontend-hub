@@ -58,6 +58,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const checkSupabaseConnection = async () => {
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').limit(1);
+      if (error) throw error;
+      return { connected: true, error: null };
+    } catch (error) {
+      console.error('Supabase connection error:', error);
+      return { 
+        connected: false, 
+        error: error instanceof Error ? error : new Error('Failed to connect to Supabase') 
+      };
+    }
+  };
+
+  // Test the connection when the context is initialized
+  useEffect(() => {
+    const testConnection = async () => {
+      const { connected, error } = await checkSupabaseConnection();
+      if (connected) {
+        console.log('✅ Successfully connected to Supabase');
+      } else {
+        console.error('❌ Failed to connect to Supabase:', error?.message);
+      }
+    };
+    testConnection();
+  }, []);
+
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({

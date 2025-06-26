@@ -84,13 +84,16 @@ CREATE TRIGGER on_auth_user_created
 -- Insert some dummy accounts for testing
 INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_user_meta_data, aud, role)
 VALUES 
-  ('550e8400-e29b-41d4-a716-446655440000', 'admin@mafarah.com', crypt('admin123', gen_salt('bf')), NOW(), NOW(), NOW(), '{"first_name": "Admin", "last_name": "User"}', 'authenticated', 'authenticated'),
-  ('550e8400-e29b-41d4-a716-446655440001', 'investor@mafarah.com', crypt('investor123', gen_salt('bf')), NOW(), NOW(), NOW(), '{"first_name": "John", "last_name": "Investor"}', 'authenticated', 'authenticated'),
-  ('550e8400-e29b-41d4-a716-446655440002', 'player@mafarah.com', crypt('player123', gen_salt('bf')), NOW(), NOW(), NOW(), '{"first_name": "Alex", "last_name": "Player"}', 'authenticated', 'authenticated');
+  ('550e8400-e29b-41d4-a716-446655440000', 'admin@mafasc.org', crypt('admin123', gen_salt('bf')), NOW(), NOW(), NOW(), '{"first_name": "Admin", "last_name": "User"}', 'authenticated', 'authenticated'),
+  ('550e8400-e29b-41d4-a716-446655440001', 'investor@mmafasc.org', crypt('investor123', gen_salt('bf')), NOW(), NOW(), NOW(), '{"first_name": "John", "last_name": "Investor"}', 'authenticated', 'authenticated'),
+  ('550e8400-e29b-41d4-a716-446655440002', 'player@mafasc.org', crypt('player123', gen_salt('bf')), NOW(), NOW(), NOW(), '{"first_name": "Alex", "last_name": "Player"}', 'authenticated', 'authenticated');
+  ('550e8400-e29b-41d4-a716-446655440003', 'partner@mafasc.org', crypt('partner123', gen_salt('bf')), NOW(), NOW(), NOW(), '{"first_name": "Alex", "last_name": "Partner"}', 'authenticated', 'authenticated');
 
 -- Assign roles to dummy accounts
 INSERT INTO public.user_roles (user_id, role)
 VALUES 
   ('550e8400-e29b-41d4-a716-446655440000', 'admin'),
   ('550e8400-e29b-41d4-a716-446655440001', 'investor'),
-  ('550e8400-e29b-41d4-a716-446655440002', 'player');
+  ('550e8400-e29b-41d4-a716-446655440002', 'player'),
+  ('550e8400-e29b-41d4-a716-446655440003', 'partner');
+
