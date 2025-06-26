@@ -1,10 +1,14 @@
 
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import UserMenu from './UserMenu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -45,11 +49,17 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <Button className="bg-wine-red hover:bg-wine-red/90 text-white">
-              Join Academy
-            </Button>
+          {/* Auth Section */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <UserMenu />
+            ) : (
+              <Link to="/auth">
+                <Button className="bg-wine-red hover:bg-wine-red/90 text-white">
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -77,9 +87,17 @@ const Header = () => {
                   {item.name}
                 </a>
               ))}
-              <Button className="bg-wine-red hover:bg-wine-red/90 text-white w-full">
-                Join Academy
-              </Button>
+              <div className="pt-4 border-t">
+                {user ? (
+                  <UserMenu />
+                ) : (
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    <Button className="bg-wine-red hover:bg-wine-red/90 text-white w-full">
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </nav>
           </div>
         )}
