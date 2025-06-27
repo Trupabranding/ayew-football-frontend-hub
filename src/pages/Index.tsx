@@ -8,6 +8,7 @@ import InvestmentSection from '@/components/InvestmentSection';
 import DonationSection from '@/components/DonationSection';
 import MatchesSection from '@/components/MatchesSection';
 import NewsSection from '@/components/NewsSection';
+import FAQSection from '@/components/FAQSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import AOS from 'aos';
@@ -45,6 +46,9 @@ const Index = () => {
       </div>
       <div className="bg-gray-50" data-aos="fade-up">
         <NewsSection />
+      </div>
+      <div className="bg-white" data-aos="fade-up">
+        <FAQSection />
       </div>
       <div className="bg-wine-red" data-aos="fade-up">
         <ContactSection />

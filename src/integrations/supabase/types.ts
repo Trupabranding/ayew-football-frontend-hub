@@ -9,6 +9,54 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          content: string | null
+          created_at: string
+          excerpt: string | null
+          featured_image: string | null
+          id: string
+          is_published: boolean
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          is_published?: boolean
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          is_published?: boolean
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       faqs: {
         Row: {
           answer: string
@@ -78,6 +126,33 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sections: {
         Row: {
           content: string | null
@@ -111,6 +186,30 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      site_statistics: {
+        Row: {
+          created_at: string
+          id: string
+          metric_date: string
+          metric_name: string
+          metric_value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metric_date?: string
+          metric_name: string
+          metric_value?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metric_date?: string
+          metric_name?: string
+          metric_value?: number
         }
         Relationships: []
       }

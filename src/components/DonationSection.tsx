@@ -81,30 +81,31 @@ const DonationSection = () => {
             <h3 className="text-xl md:text-2xl font-bold text-white mb-6 md:mb-8">Your Impact</h3>
             <div className="space-y-4 md:space-y-6">
               {impactAreas.map((area, index) => (
-                <Card key={index} className="flex flex-col sm:flex-row items-start sm:items-center p-4 hover:shadow-lg transition-all duration-300 bg-white/90 backdrop-blur-sm" data-aos="fade-up" data-aos-delay={index * 100}>
-                  <div className="relative w-full h-48 overflow-hidden rounded-t-lg bg-gray-100">
-                    <img 
-                      src={imageErrors[index] ? area.fallbackImage : area.image}
-                      alt={area.title}
-                      className="w-full h-full object-cover transition-opacity duration-300"
-                      loading="lazy"
-                      onError={() => handleImageError(index)}
-                      onLoad={(e) => {
-                        // Ensure smooth loading
-                        const target = e.target as HTMLImageElement;
-                        target.style.opacity = '1';
-                      }}
-                      style={{ opacity: 0 }}
-                    />
-                    {imageErrors[index] && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                        <span className="text-gray-400">{area.title} Image</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-wine-red text-sm md:text-base">{area.title}</h4>
-                    <p className="text-xs md:text-sm text-gray-600 mt-1">{area.description}</p>
+                <Card key={index} className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-white/95 backdrop-blur-sm" data-aos="fade-up" data-aos-delay={index * 100}>
+                  <div className="flex flex-col sm:flex-row">
+                    <div className="relative w-full sm:w-32 h-32 sm:h-auto flex-shrink-0">
+                      <img 
+                        src={imageErrors[index] ? area.fallbackImage : area.image}
+                        alt={area.title}
+                        className="w-full h-full object-cover transition-opacity duration-300"
+                        loading="lazy"
+                        onError={() => handleImageError(index)}
+                        onLoad={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.opacity = '1';
+                        }}
+                        style={{ opacity: 0 }}
+                      />
+                      {imageErrors[index] && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                          <span className="text-gray-400 text-xs text-center px-2">{area.title}</span>
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="flex-1 p-4">
+                      <h4 className="font-semibold text-wine-red text-base mb-2">{area.title}</h4>
+                      <p className="text-sm text-gray-600 leading-relaxed">{area.description}</p>
+                    </CardContent>
                   </div>
                 </Card>
               ))}
