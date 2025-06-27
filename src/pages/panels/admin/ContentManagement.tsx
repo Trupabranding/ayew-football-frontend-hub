@@ -1,12 +1,15 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Save, Edit, Plus, Trash2, Eye } from 'lucide-react';
+import { Save, Edit, Plus } from 'lucide-react';
+import { CMSLayout } from '@/components/cms/CMSLayout';
+import { RichTextEditor } from '@/components/cms/RichTextEditor';
+import { PagesManager } from '@/components/cms/PagesManager';
 
 interface Section {
   id: string;
@@ -25,10 +28,18 @@ export default function ContentManagement() {
   const [editingSection, setEditingSection] = useState<Section | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('sections');
+  const [stats, setStats] = useState({
+    totalSections: 0,
+    activeSections: 0,
+    totalPages: 0,
+    publishedPages: 0
+  });
   const { toast } = useToast();
 
   useEffect(() => {
     fetchSections();
+    fetchStats();
   }, []);
 
   const fetchSections = async () => {
@@ -60,6 +71,29 @@ export default function ContentManagement() {
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const [sectionsResult, pagesResult] = await Promise.all([
+        supabase.from('sections').select('id, is_active'),
+        supabase.from('pages').select('id, is_published')
+      ]);
+
+      const totalSections = sectionsResult.data?.length || 0;
+      const activeSections = sectionsResult.data?.filter(s => s.is_active).length || 0;
+      const totalPages = pagesResult.data?.length || 0;
+      const publishedPages = pagesResult.data?.filter(p => p.is_published).length || 0;
+
+      setStats({
+        totalSections,
+        activeSections,
+        totalPages,
+        publishedPages
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
   const handleSaveSection = async (section: Section) => {
     setSaving(true);
     try {
@@ -87,6 +121,7 @@ export default function ContentManagement() {
         });
         setEditingSection(null);
         fetchSections();
+        fetchStats();
       }
     } catch (error) {
       console.error('Section update error:', error);
@@ -117,31 +152,45 @@ export default function ContentManagement() {
     }
   };
 
-  if (loading) {
+  const toggleSectionStatus = async (section: Section) => {
+    try {
+      const { error } = await supabase
+        .from('sections')
+        .update({ is_active: !section.is_active })
+        .eq('id', section.id);
+
+      if (error) throw error;
+
+      fetchSections();
+      fetchStats();
+    } catch (error) {
+      console.error('Error toggling section status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update section status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const renderSectionsTab = () => {
+    if (loading) {
+      return (
+        <div className="space-y-6">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+          <div className="grid gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-48 bg-gray-200 rounded animate-pulse"></div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     return (
-      <div className="space-y-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-        </div>
-        <div className="grid gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-48 bg-gray-200 rounded animate-pulse"></div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Content Management System (CMS)</h2>
-        <p className="text-muted-foreground">
-          Manage website pages and sections content
-        </p>
-      </div>
-
       <div className="grid gap-6">
         {sections.map((section) => (
           <Card key={section.id}>
@@ -157,16 +206,11 @@ export default function ContentManagement() {
                   <span className="text-sm">Active</span>
                   <Switch
                     checked={section.is_active}
-                    onCheckedChange={(checked) => {
+                    onCheckedChange={() => {
                       if (editingSection?.id === section.id) {
-                        updateEditingSection('is_active', checked);
+                        updateEditingSection('is_active', !section.is_active);
                       } else {
-                        // Quick toggle without editing
-                        supabase
-                          .from('sections')
-                          .update({ is_active: checked })
-                          .eq('id', section.id)
-                          .then(() => fetchSections());
+                        toggleSectionStatus(section);
                       }
                     }}
                   />
@@ -214,11 +258,11 @@ export default function ContentManagement() {
                   </div>
                   <div>
                     <label className="text-sm font-medium">Content</label>
-                    <Textarea
+                    <RichTextEditor
                       value={editingSection.content}
-                      onChange={(e) => updateEditingSection('content', e.target.value)}
+                      onChange={(content) => updateEditingSection('content', content)}
                       placeholder="Section content"
-                      rows={6}
+                      minHeight={200}
                     />
                   </div>
                 </div>
@@ -237,6 +281,57 @@ export default function ContentManagement() {
           </Card>
         ))}
       </div>
+    );
+  };
+
+  const renderLayoutTab = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Layout Manager</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Manage website layout and component arrangement
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            <p>Layout manager coming soon...</p>
+            <p className="text-sm">Drag and drop interface for managing page layouts</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
+  );
+
+  const renderMediaTab = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Media Library</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Manage images, videos, and other media files
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            <p>Media library coming soon...</p>
+            <p className="text-sm">Upload and manage your media files</p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  return (
+    <CMSLayout
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      stats={stats}
+    >
+      {activeTab === 'sections' && renderSectionsTab()}
+      {activeTab === 'pages' && <PagesManager />}
+      {activeTab === 'layout' && renderLayoutTab()}
+      {activeTab === 'media' && renderMediaTab()}
+    </CMSLayout>
   );
 }
