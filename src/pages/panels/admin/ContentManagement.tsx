@@ -5,6 +5,7 @@ import { CMSLayout } from '@/components/cms/CMSLayout';
 import { SectionsManager } from '@/components/cms/SectionsManager';
 import { PagesManager } from '@/components/cms/PagesManager';
 import { PlaceholderTab } from '@/components/cms/PlaceholderTabs';
+import { FAQsTab } from '@/components/cms/FAQsTab';
 
 export default function ContentManagement() {
   const [activeTab, setActiveTab] = useState('sections');
@@ -48,6 +49,8 @@ export default function ContentManagement() {
         return <SectionsManager onStatsUpdate={fetchStats} />;
       case 'pages':
         return <PagesManager />;
+      case 'faqs':
+        return <FAQsTab />;
       case 'layout':
         return (
           <PlaceholderTab

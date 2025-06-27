@@ -90,9 +90,10 @@ export const CMSLayout = ({ children, activeTab, onTabChange, stats }: CMSLayout
       )}
 
       <Tabs value={activeTab} onValueChange={onTabChange}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="sections">Sections</TabsTrigger>
           <TabsTrigger value="pages">Pages</TabsTrigger>
+          <TabsTrigger value="faqs">FAQs</TabsTrigger>
           <TabsTrigger value="layout">Layout</TabsTrigger>
           <TabsTrigger value="media">Media</TabsTrigger>
         </TabsList>
