@@ -1,11 +1,24 @@
+
 import { UserRole } from '@/types/roles';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Home, Users, BarChart3, Settings, User, Briefcase } from 'lucide-react';
+import { 
+  Home, 
+  Users, 
+  BarChart3, 
+  Settings, 
+  User, 
+  Briefcase,
+  FileText,
+  Globe,
+  Edit
+} from 'lucide-react';
 
 const navigation = {
   admin: [
     { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
+    { name: 'Content', href: '/admin/content', icon: Globe },
+    { name: 'Blog', href: '/admin/blog', icon: Edit },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { name: 'Settings', href: '/admin/settings', icon: Settings },

@@ -15,6 +15,8 @@ import NotFound from "./pages/NotFound";
 
 // Panel Pages
 import AdminDashboard from "./pages/panels/admin/Dashboard";
+import ContentManagement from "./pages/panels/admin/ContentManagement";
+import BlogManagement from "./pages/panels/admin/BlogManagement";
 import InvestorDashboard from "./pages/panels/investor/Dashboard";
 import PlayerDashboard from "./pages/panels/player/Dashboard";
 import PartnerDashboard from "./pages/panels/partner/Dashboard";
@@ -49,6 +51,8 @@ const App = () => (
                     <Routes>
                       <Route index element={<Navigate to="dashboard" replace />} />
                       <Route path="dashboard" element={<AdminDashboard />} />
+                      <Route path="content" element={<ContentManagement />} />
+                      <Route path="blog" element={<BlogManagement />} />
                       {/* Add more admin routes here */}
                     </Routes>
                   </DashboardLayout>
