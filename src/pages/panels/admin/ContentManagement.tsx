@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -137,9 +136,9 @@ export default function ContentManagement() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Content Management</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Content Management System (CMS)</h2>
         <p className="text-muted-foreground">
-          Manage website sections and content
+          Manage website pages and sections content
         </p>
       </div>
 
