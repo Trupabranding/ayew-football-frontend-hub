@@ -10,7 +10,7 @@ import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 // Pages
 import Index from "./pages/Index";
-import Auth from "./pages/auth/Login";
+import Login from "./pages/auth/Login";
 import NotFound from "./pages/NotFound";
 
 // Panel Pages
@@ -38,7 +38,7 @@ const App = () => (
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
-            <Route path="/auth/*" element={<Auth />} />
+            <Route path="/auth" element={<Login />} />
             
             {/* Admin Routes */}
             <Route

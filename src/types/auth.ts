@@ -1,12 +1,9 @@
-import { UserRole } from './roles';
 
-export interface User {
-  id: string;
-  email: string;
-  role: UserRole;
-  // Add other user properties as needed
-  created_at?: string;
-  updated_at?: string;
+import { UserRole } from './roles';
+import { User as SupabaseUser } from '@supabase/supabase-js';
+
+export interface User extends SupabaseUser {
+  role?: UserRole;
 }
 
 export interface AuthContextType {

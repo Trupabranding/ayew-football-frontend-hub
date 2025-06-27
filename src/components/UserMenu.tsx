@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { User, LogOut, Settings, BarChart3, TrendingUp, Award, Globe, Shield } from 'lucide-react';
+import { User, LogOut, Settings, Shield, TrendingUp, Award, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface UserRoles {
@@ -38,30 +38,23 @@ const UserMenu = () => {
     if (!user) return;
 
     try {
-      const roles = ['admin', 'investor', 'player', 'partner'] as const;
-      const roleChecks = await Promise.all(
-        roles.map(async (role) => {
-          const { data, error } = await supabase
-            .rpc('has_role', { 
-              check_user_id: user.id, 
-              check_role: role 
-            });
-          
-          if (error) {
-            console.error(`Error checking ${role} role:`, error);
-            return { role, hasRole: false };
-          }
-          
-          return { role, hasRole: data || false };
-        })
-      );
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id);
+      
+      if (error) {
+        console.error('Error fetching user roles:', error);
+        return;
+      }
 
-      const rolesObject = roleChecks.reduce((acc, { role, hasRole }) => {
-        acc[role] = hasRole;
-        return acc;
-      }, {} as UserRoles);
-
-      setUserRoles(rolesObject);
+      const roles = data?.map(r => r.role) || [];
+      setUserRoles({
+        admin: roles.includes('admin'),
+        investor: roles.includes('investor'),
+        player: roles.includes('player'),
+        partner: roles.includes('partner')
+      });
     } catch (error) {
       console.error('Error fetching user roles:', error);
     }
@@ -77,28 +70,28 @@ const UserMenu = () => {
   const dashboardLinks = [
     {
       condition: userRoles.admin,
-      to: '/admin-dashboard',
+      to: '/admin/dashboard',
       icon: Shield,
       label: 'Admin Dashboard',
       description: 'Manage academy operations'
     },
     {
       condition: userRoles.investor,
-      to: '/investor-dashboard',
+      to: '/investor/dashboard',
       icon: TrendingUp,
       label: 'Investor Dashboard',
       description: 'Track investments'
     },
     {
       condition: userRoles.player,
-      to: '/player-dashboard',
+      to: '/player/dashboard',
       icon: Award,
       label: 'Player Dashboard',
       description: 'View performance'
     },
     {
       condition: userRoles.partner,
-      to: '/partner-dashboard',
+      to: '/partner/dashboard',
       icon: Globe,
       label: 'Partner Dashboard',
       description: 'Manage partnerships'

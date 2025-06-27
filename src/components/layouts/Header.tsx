@@ -1,5 +1,5 @@
+
 import { UserRole } from '@/types/roles';
-import { UserMenu } from '@/components/UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface HeaderProps {
@@ -15,8 +15,12 @@ export const Header = ({ role }: HeaderProps) => {
         <h1 className="text-2xl font-semibold text-gray-900">
           {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard
         </h1>
-        <div className="flex items-center space-x-4
-          {user && <UserMenu user={user} />}
+        <div className="flex items-center space-x-4">
+          {user && (
+            <div className="text-sm text-gray-600">
+              Welcome, {user.user_metadata?.first_name || user.email}
+            </div>
+          )}
         </div>
       </div>
     </header>

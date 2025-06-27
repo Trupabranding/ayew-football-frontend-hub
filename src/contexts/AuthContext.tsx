@@ -2,6 +2,11 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session, AuthError } from '@supabase/supabase-js';
+import { UserRole } from '@/types/roles';
+
+interface AuthUser extends User {
+  role?: UserRole;
+}
 
 interface AuthErrorResponse {
   error: AuthError | Error | null;
@@ -9,7 +14,7 @@ interface AuthErrorResponse {
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<AuthErrorResponse>;
@@ -34,55 +39,73 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const fetchUserRole = async (userId: string): Promise<UserRole | null> => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user role:', error);
+        return null;
+      }
+
+      return data?.role as UserRole || null;
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+      return null;
+    }
+  };
+
+  const updateUserWithRole = async (authUser: User | null) => {
+    if (!authUser) {
+      setUser(null);
+      return;
+    }
+
+    const role = await fetchUserRole(authUser.id);
+    setUser({
+      ...authUser,
+      role: role || undefined,
+    });
+  };
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
-        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await updateUserWithRole(session.user);
+        } else {
+          setUser(null);
+        }
+        
         setLoading(false);
       }
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        await updateUserWithRole(session.user);
+      } else {
+        setUser(null);
+      }
+      
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  const checkSupabaseConnection = async () => {
-    try {
-      const { data, error } = await supabase.from('profiles').select('*').limit(1);
-      if (error) throw error;
-      return { connected: true, error: null };
-    } catch (error) {
-      console.error('Supabase connection error:', error);
-      return { 
-        connected: false, 
-        error: error instanceof Error ? error : new Error('Failed to connect to Supabase') 
-      };
-    }
-  };
-
-  // Test the connection when the context is initialized
-  useEffect(() => {
-    const testConnection = async () => {
-      const { connected, error } = await checkSupabaseConnection();
-      if (connected) {
-        console.log('✅ Successfully connected to Supabase');
-      } else {
-        console.error('❌ Failed to connect to Supabase:', error?.message);
-      }
-    };
-    testConnection();
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -95,7 +118,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (error) {
         console.error('Login error:', error.message);
         
-        // Handle specific error cases
         if (error.message.includes('Invalid login credentials')) {
           return { 
             error: { 
@@ -105,19 +127,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           };
         }
         
-        if (error.message.includes('Email not confirmed')) {
-          return { 
-            error: { 
-              ...error, 
-              message: 'Please confirm your email before logging in.' 
-            } 
-          };
-        }
-        
         return { error };
       }
 
-      // Successfully logged in
       console.log('Login successful:', data);
       return { error: null };
       
@@ -194,7 +206,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const { data, error } = await supabase.auth.admin.listUsers();
       if (error) throw error;
-      // Type assertion to ensure TypeScript knows about the email property
       return data.users.some((user: { email?: string }) => user.email === email);
     } catch (error) {
       console.error('Error checking user existence:', error);
