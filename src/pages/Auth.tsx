@@ -74,11 +74,12 @@ const Auth = () => {
     }
   };
 
-  const fillDemoAccount = (type: 'admin' | 'investor' | 'player') => {
+  const fillDemoAccount = (type: 'admin' | 'investor' | 'player' | 'partner') => {
     const accounts = {
-      admin: { email: 'admin@mafarah.com', password: 'admin123' },
-      investor: { email: 'investor@mafarah.com', password: 'investor123' },
-      player: { email: 'player@mafarah.com', password: 'player123' }
+      admin: { email: 'admin@mafasc.org', password: 'admin123' },
+      investor: { email: 'investor@mafasc.org', password: 'investor123' },
+      player: { email: 'player@mafasc.org', password: 'player123' },
+      partner: { email: 'partner@mafasc.org', password: 'partner123' }
     };
     
     setEmail(accounts[type].email);
@@ -181,7 +182,7 @@ const Auth = () => {
                     onClick={() => fillDemoAccount('admin')}
                     className="w-full text-xs"
                   >
-                    Admin Demo (admin@mafarah.com)
+                    Admin Demo (admin@mafasc.org)
                   </Button>
                   <Button
                     variant="outline"
@@ -189,7 +190,7 @@ const Auth = () => {
                     onClick={() => fillDemoAccount('investor')}
                     className="w-full text-xs"
                   >
-                    Investor Demo (investor@mafarah.com)
+                    Investor Demo (investor@mafasc.org)
                   </Button>
                   <Button
                     variant="outline"
@@ -197,7 +198,15 @@ const Auth = () => {
                     onClick={() => fillDemoAccount('player')}
                     className="w-full text-xs"
                   >
-                    Player Demo (player@mafarah.com)
+                    Player Demo (player@mafasc.org)
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fillDemoAccount('partner')}
+                    className="w-full text-xs"
+                  >
+                    Partner Demo (partner@mafasc.org)
                   </Button>
                 </div>
               </div>
