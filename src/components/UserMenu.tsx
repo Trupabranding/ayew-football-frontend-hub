@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/popover';
 import { User, LogOut, Settings, Shield, TrendingUp, Award, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { UserRole } from '@/types/roles';
 
 interface UserRoles {
   admin: boolean;
@@ -48,7 +49,7 @@ const UserMenu = () => {
         return;
       }
 
-      const roles = data?.map(r => r.role) || [];
+      const roles = data?.map(r => r.role as UserRole) || [];
       setUserRoles({
         admin: roles.includes('admin'),
         investor: roles.includes('investor'),

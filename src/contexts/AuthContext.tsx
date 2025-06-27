@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session, AuthError } from '@supabase/supabase-js';
@@ -43,36 +42,73 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUserRole = async (userId: string): Promise<UserRole | null> => {
+  const fetchUserRoles = async (userId: string): Promise<UserRole[]> => {
     try {
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', userId)
-        .single();
+        .eq('user_id', userId);
 
       if (error) {
-        console.error('Error fetching user role:', error);
-        return null;
+        console.error('Error fetching user roles:', error);
+        return [];
       }
 
-      return data?.role as UserRole || null;
+      return data?.map(r => r.role) || [];
     } catch (error) {
-      console.error('Error fetching user role:', error);
-      return null;
+      console.error('Error fetching user roles:', error);
+      return [];
     }
   };
 
-  const updateUserWithRole = async (authUser: User | null) => {
+  const assignAdminRoleToFirstUser = async (userId: string) => {
+    try {
+      // Check if any admin exists
+      const { data: existingAdmins, error: adminCheckError } = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('role', 'admin');
+
+      if (adminCheckError) {
+        console.error('Error checking for existing admins:', adminCheckError);
+        return;
+      }
+
+      // If no admin exists, make this user an admin
+      if (!existingAdmins || existingAdmins.length === 0) {
+        const { error: insertError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: userId,
+            role: 'admin'
+          });
+
+        if (insertError) {
+          console.error('Error assigning admin role:', insertError);
+        } else {
+          console.log('First user assigned admin role successfully');
+        }
+      }
+    } catch (error) {
+      console.error('Error in assignAdminRoleToFirstUser:', error);
+    }
+  };
+
+  const updateUserWithRoles = async (authUser: User | null) => {
     if (!authUser) {
       setUser(null);
       return;
     }
 
-    const role = await fetchUserRole(authUser.id);
+    // Assign admin role if this is the first user
+    await assignAdminRoleToFirstUser(authUser.id);
+
+    const roles = await fetchUserRoles(authUser.id);
+    const primaryRole = roles.length > 0 ? roles[0] : undefined;
+
     setUser({
       ...authUser,
-      role: role || undefined,
+      role: primaryRole,
     });
   };
 
@@ -83,7 +119,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setSession(session);
         
         if (session?.user) {
-          await updateUserWithRole(session.user);
+          await updateUserWithRoles(session.user);
         } else {
           setUser(null);
         }
@@ -97,7 +133,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setSession(session);
       
       if (session?.user) {
-        await updateUserWithRole(session.user);
+        await updateUserWithRoles(session.user);
       } else {
         setUser(null);
       }
