@@ -1,58 +1,92 @@
 
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { useEffect } from 'react';
+import { User, MapPin, Calendar, Download, Play } from 'lucide-react';
 import AOS from 'aos';
 
+interface Player {
+  id: string;
+  name: string;
+  position: string | null;
+  nationality: string | null;
+  date_of_birth: string | null;
+  height_cm: number | null;
+  weight_kg: number | null;
+  photo_url: string | null;
+  cv_url: string | null;
+  highlight_video_url: string | null;
+  bio: string | null;
+  goals: number | null;
+  assists: number | null;
+  appearances: number | null;
+  saves: number | null;
+  is_featured: boolean | null;
+  is_visible_homepage: boolean | null;
+  season: string | null;
+  squad: string | null;
+}
+
 const PlayersSection = () => {
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     AOS.init({
       duration: 800,
       once: true,
       offset: 100,
-      easing: 'ease-out-cubic',
     });
+    fetchPlayers();
   }, []);
 
-  const players = [
-    {
-      id: 1,
-      name: "Kwame Asante",
-      position: "Forward",
-      age: 17,
-      image: "https://images.unsplash.com/photo-1559379231-39a8ca572c9e?auto=format&fit=crop&q=80&w=400",
-      stats: { goals: 24, assists: 8, appearances: 32 },
-      nationality: "Ghana"
-    },
-    {
-      id: 2,
-      name: "Joseph Mensah",
-      position: "Midfielder",
-      age: 16,
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=400",
-      stats: { goals: 12, assists: 18, appearances: 30 },
-      nationality: "Ghana"
-    },
-    {
-      id: 3,
-      name: "Emmanuel Tetteh",
-      position: "Defender",
-      age: 18,
-      image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=400",
-      stats: { goals: 3, assists: 5, appearances: 35 },
-      nationality: "Ghana"
-    },
-    {
-      id: 4,
-      name: "Samuel Boateng",
-      position: "Goalkeeper",
-      age: 17,
-      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=400",
-      stats: { saves: 89, cleanSheets: 18, appearances: 28 },
-      nationality: "Ghana"
+  const fetchPlayers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('players')
+        .select('*')
+        .eq('is_visible_homepage', true)
+        .order('is_featured', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPlayers(data || []);
+    } catch (error) {
+      console.error('Error fetching players:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const calculateAge = (dateOfBirth: string) => {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  if (loading) {
+    return (
+      <section className="py-12 md:py-20 bg-wine-red">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="animate-pulse">
+              <div className="h-8 bg-white/20 rounded w-1/3 mx-auto mb-4"></div>
+              <div className="h-4 bg-white/20 rounded w-2/3 mx-auto"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="players" className="py-12 md:py-20 bg-wine-red">
@@ -61,75 +95,203 @@ const PlayersSection = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6">
             Our Players
           </h2>
-          <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-6 md:mb-8">
-            Meet our talented athletes who represent the future of football. 
-            Each player brings unique skills and dedication to our academy.
+          <p className="text-lg md:text-xl text-gray-100 max-w-3xl mx-auto leading-relaxed">
+            Meet the talented athletes who represent our academy with passion, skill, and dedication.
           </p>
-          <Button className="bg-white hover:bg-gray-100 text-wine-red" data-aos="fade-up" data-aos-delay="200">
-            View All Players
-          </Button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {players.map((player, index) => (
-            <Card key={player.id} className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer" data-aos="fade-up" data-aos-delay={300 + index * 100}>
-              <div className="relative">
-                <img 
-                  src={player.image} 
-                  alt={player.name}
-                  className="w-full h-48 md:h-64 object-cover rounded-t-lg"
-                />
-                <Badge className="absolute top-4 right-4 bg-wine-red text-white">
-                  {player.position}
-                </Badge>
-              </div>
-              <CardContent className="p-4 md:p-6">
-                <h3 className="font-bold text-lg md:text-xl text-secondary mb-2">{player.name}</h3>
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-600 text-sm md:text-base">Age: {player.age}</span>
-                  <span className="text-xs md:text-sm text-gray-500">{player.nationality}</span>
-                </div>
-                
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-sm text-secondary">Season Stats:</h4>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
-                    {player.position === 'Goalkeeper' ? (
-                      <>
-                        <div className="text-center">
-                          <div className="font-bold text-wine-red">{player.stats.saves}</div>
-                          <div className="text-gray-500">Saves</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-bold text-wine-red">{player.stats.cleanSheets}</div>
-                          <div className="text-gray-500">Clean Sheets</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-bold text-wine-red">{player.stats.appearances}</div>
-                          <div className="text-gray-500">Apps</div>
-                        </div>
-                      </>
+        {players.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-white/80">No players to display at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+            {players.map((player, index) => (
+              <Card key={player.id} className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105" data-aos="fade-up" data-aos-delay={index * 100}>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    {player.photo_url ? (
+                      <img
+                        src={player.photo_url}
+                        alt={player.name}
+                        className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-white/30"
+                      />
                     ) : (
-                      <>
-                        <div className="text-center">
-                          <div className="font-bold text-wine-red">{player.stats.goals}</div>
-                          <div className="text-gray-500">Goals</div>
+                      <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-white/20 flex items-center justify-center border-4 border-white/30">
+                        <User className="h-12 w-12 text-white/60" />
+                      </div>
+                    )}
+                    
+                    <h3 className="text-xl font-bold text-white mb-2">{player.name}</h3>
+                    
+                    {player.position && (
+                      <Badge variant="secondary" className="mb-3 bg-white/20 text-white border-white/30">
+                        {player.position}
+                      </Badge>
+                    )}
+
+                    <div className="space-y-2 text-white/80 text-sm mb-4">
+                      {player.nationality && (
+                        <div className="flex items-center justify-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          <span>{player.nationality}</span>
                         </div>
-                        <div className="text-center">
-                          <div className="font-bold text-wine-red">{player.stats.assists}</div>
-                          <div className="text-gray-500">Assists</div>
+                      )}
+                      {player.date_of_birth && (
+                        <div className="flex items-center justify-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          <span>Age: {calculateAge(player.date_of_birth)}</span>
                         </div>
-                        <div className="text-center">
-                          <div className="font-bold text-wine-red">{player.stats.appearances}</div>
-                          <div className="text-gray-500">Apps</div>
-                        </div>
-                      </>
+                      )}
+                    </div>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-3 gap-2 mb-4 text-center">
+                      <div className="bg-white/10 rounded p-2">
+                        <div className="text-lg font-bold text-white">{player.goals || 0}</div>
+                        <div className="text-xs text-white/70">Goals</div>
+                      </div>
+                      <div className="bg-white/10 rounded p-2">
+                        <div className="text-lg font-bold text-white">{player.assists || 0}</div>
+                        <div className="text-xs text-white/70">Assists</div>
+                      </div>
+                      <div className="bg-white/10 rounded p-2">
+                        <div className="text-lg font-bold text-white">{player.appearances || 0}</div>
+                        <div className="text-xs text-white/70">Apps</div>
+                      </div>
+                    </div>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="secondary" 
+                          className="w-full bg-white/20 text-white hover:bg-white/30 border-white/30"
+                          onClick={() => setSelectedPlayer(player)}
+                        >
+                          View Profile
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl">
+                        {selectedPlayer && (
+                          <>
+                            <DialogHeader>
+                              <DialogTitle className="text-2xl">{selectedPlayer.name}</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid md:grid-cols-2 gap-6">
+                              <div className="text-center">
+                                {selectedPlayer.photo_url ? (
+                                  <img
+                                    src={selectedPlayer.photo_url}
+                                    alt={selectedPlayer.name}
+                                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-200 flex items-center justify-center">
+                                    <User className="h-16 w-16 text-gray-400" />
+                                  </div>
+                                )}
+                                <div className="space-y-2">
+                                  {selectedPlayer.position && (
+                                    <Badge variant="outline">{selectedPlayer.position}</Badge>
+                                  )}
+                                  {selectedPlayer.squad && (
+                                    <Badge variant="secondary">{selectedPlayer.squad}</Badge>
+                                  )}
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                  {selectedPlayer.nationality && (
+                                    <div>
+                                      <span className="font-medium">Nationality:</span>
+                                      <p>{selectedPlayer.nationality}</p>
+                                    </div>
+                                  )}
+                                  {selectedPlayer.date_of_birth && (
+                                    <div>
+                                      <span className="font-medium">Age:</span>
+                                      <p>{calculateAge(selectedPlayer.date_of_birth)}</p>
+                                    </div>
+                                  )}
+                                  {selectedPlayer.height_cm && (
+                                    <div>
+                                      <span className="font-medium">Height:</span>
+                                      <p>{selectedPlayer.height_cm} cm</p>
+                                    </div>
+                                  )}
+                                  {selectedPlayer.weight_kg && (
+                                    <div>
+                                      <span className="font-medium">Weight:</span>
+                                      <p>{selectedPlayer.weight_kg} kg</p>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="grid grid-cols-4 gap-2 text-center">
+                                  <div className="bg-gray-50 rounded p-2">
+                                    <div className="font-bold text-lg">{selectedPlayer.goals || 0}</div>
+                                    <div className="text-xs text-gray-600">Goals</div>
+                                  </div>
+                                  <div className="bg-gray-50 rounded p-2">
+                                    <div className="font-bold text-lg">{selectedPlayer.assists || 0}</div>
+                                    <div className="text-xs text-gray-600">Assists</div>
+                                  </div>
+                                  <div className="bg-gray-50 rounded p-2">
+                                    <div className="font-bold text-lg">{selectedPlayer.appearances || 0}</div>
+                                    <div className="text-xs text-gray-600">Apps</div>
+                                  </div>
+                                  {selectedPlayer.position === 'Goalkeeper' && (
+                                    <div className="bg-gray-50 rounded p-2">
+                                      <div className="font-bold text-lg">{selectedPlayer.saves || 0}</div>
+                                      <div className="text-xs text-gray-600">Saves</div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {selectedPlayer.bio && (
+                                  <div>
+                                    <span className="font-medium">Biography:</span>
+                                    <p className="text-sm text-gray-600 mt-1">{selectedPlayer.bio}</p>
+                                  </div>
+                                )}
+
+                                <div className="flex gap-2">
+                                  {selectedPlayer.cv_url && (
+                                    <Button asChild size="sm" variant="outline">
+                                      <a href={selectedPlayer.cv_url} target="_blank" rel="noopener noreferrer">
+                                        <Download className="h-4 w-4 mr-1" />
+                                        Download CV
+                                      </a>
+                                    </Button>
+                                  )}
+                                  {selectedPlayer.highlight_video_url && (
+                                    <Button asChild size="sm" variant="outline">
+                                      <a href={selectedPlayer.highlight_video_url} target="_blank" rel="noopener noreferrer">
+                                        <Play className="h-4 w-4 mr-1" />
+                                        Watch Highlights
+                                      </a>
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </DialogContent>
+                    </Dialog>
+
+                    {player.is_featured && (
+                      <Badge className="absolute top-2 right-2 bg-yellow-500 text-yellow-900">
+                        Featured
+                      </Badge>
                     )}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

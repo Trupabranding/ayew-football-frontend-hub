@@ -1,7 +1,6 @@
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Globe, Edit } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FileText, Layout, Users, Handshake, HelpCircle } from 'lucide-react';
 
 interface ContentStatsProps {
   stats: {
@@ -9,56 +8,66 @@ interface ContentStatsProps {
     activeSections: number;
     totalPages: number;
     publishedPages: number;
+    totalPlayers?: number;
+    featuredPlayers?: number;
+    totalPartners?: number;
+    activePartners?: number;
   };
 }
 
 export const ContentStats = ({ stats }: ContentStatsProps) => {
+  const statCards = [
+    {
+      title: 'Sections',
+      value: `${stats.activeSections}/${stats.totalSections}`,
+      description: 'Active sections',
+      icon: Layout,
+      color: 'text-blue-600'
+    },
+    {
+      title: 'Pages',
+      value: `${stats.publishedPages}/${stats.totalPages}`,
+      description: 'Published pages',
+      icon: FileText,
+      color: 'text-green-600'
+    },
+    {
+      title: 'Players',
+      value: `${stats.featuredPlayers || 0}/${stats.totalPlayers || 0}`,
+      description: 'Featured players',
+      icon: Users,
+      color: 'text-purple-600'
+    },
+    {
+      title: 'Partners',
+      value: `${stats.activePartners || 0}/${stats.totalPartners || 0}`,
+      description: 'Active partners',
+      icon: Handshake,
+      color: 'text-orange-600'
+    }
+  ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Total Sections</p>
-              <p className="text-2xl font-bold">{stats.totalSections}</p>
-            </div>
-            <Badge variant="secondary">{stats.activeSections} Active</Badge>
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Total Pages</p>
-              <p className="text-2xl font-bold">{stats.totalPages}</p>
-            </div>
-            <Badge variant="secondary">{stats.publishedPages} Published</Badge>
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Site Status</p>
-              <p className="text-sm font-semibold text-green-600">Online</p>
-            </div>
-            <Globe className="h-5 w-5 text-green-600" />
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Last Update</p>
-              <p className="text-sm">{new Date().toLocaleDateString()}</p>
-            </div>
-            <Edit className="h-5 w-5 text-blue-600" />
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {statCards.map((stat, index) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={index}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {stat.title}
+              </CardTitle>
+              <Icon className={`h-4 w-4 ${stat.color}`} />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-muted-foreground">
+                {stat.description}
+              </p>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 };

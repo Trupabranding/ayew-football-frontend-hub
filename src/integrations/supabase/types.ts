@@ -90,6 +90,126 @@ export type Database = {
         }
         Relationships: []
       }
+      media_library: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          file_size: number
+          file_type: string
+          filename: string
+          folder: string | null
+          id: string
+          mime_type: string
+          original_name: string
+          tags: string[] | null
+          uploaded_by: string | null
+          url: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          file_size: number
+          file_type: string
+          filename: string
+          folder?: string | null
+          id?: string
+          mime_type: string
+          original_name: string
+          tags?: string[] | null
+          uploaded_by?: string | null
+          url: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          file_size?: number
+          file_type?: string
+          filename?: string
+          folder?: string | null
+          id?: string
+          mime_type?: string
+          original_name?: string
+          tags?: string[] | null
+          uploaded_by?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          admin_reply: string | null
+          created_at: string
+          id: string
+          message: string
+          message_type: string | null
+          replied_at: string | null
+          sender_email: string
+          sender_name: string
+          sender_phone: string | null
+          status: string | null
+          subject: string | null
+        }
+        Insert: {
+          admin_reply?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          message_type?: string | null
+          replied_at?: string | null
+          sender_email: string
+          sender_name: string
+          sender_phone?: string | null
+          status?: string | null
+          subject?: string | null
+        }
+        Update: {
+          admin_reply?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          message_type?: string | null
+          replied_at?: string | null
+          sender_email?: string
+          sender_name?: string
+          sender_phone?: string | null
+          status?: string | null
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      multilingual_content: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          field_name: string
+          id: string
+          language_code: string
+          translated_value: string
+          updated_at: string
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          field_name: string
+          id?: string
+          language_code: string
+          translated_value: string
+          updated_at?: string
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          field_name?: string
+          id?: string
+          language_code?: string
+          translated_value?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pages: {
         Row: {
           content: string | null
@@ -123,6 +243,132 @@ export type Database = {
           slug?: string
           title?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      partners: {
+        Row: {
+          company_name: string | null
+          contact_person: string | null
+          created_at: string
+          description: string | null
+          email: string
+          id: string
+          investment_amount: number | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          logo_url: string | null
+          name: string
+          partner_type: string
+          phone: string | null
+          tier: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_name?: string | null
+          contact_person?: string | null
+          created_at?: string
+          description?: string | null
+          email: string
+          id?: string
+          investment_amount?: number | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          logo_url?: string | null
+          name: string
+          partner_type: string
+          phone?: string | null
+          tier?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string | null
+          contact_person?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string
+          id?: string
+          investment_amount?: number | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          logo_url?: string | null
+          name?: string
+          partner_type?: string
+          phone?: string | null
+          tier?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      players: {
+        Row: {
+          appearances: number | null
+          assists: number | null
+          bio: string | null
+          created_at: string
+          cv_url: string | null
+          date_of_birth: string | null
+          goals: number | null
+          height_cm: number | null
+          highlight_video_url: string | null
+          id: string
+          is_featured: boolean | null
+          is_visible_homepage: boolean | null
+          name: string
+          nationality: string | null
+          photo_url: string | null
+          position: string | null
+          saves: number | null
+          season: string | null
+          squad: string | null
+          updated_at: string
+          weight_kg: number | null
+        }
+        Insert: {
+          appearances?: number | null
+          assists?: number | null
+          bio?: string | null
+          created_at?: string
+          cv_url?: string | null
+          date_of_birth?: string | null
+          goals?: number | null
+          height_cm?: number | null
+          highlight_video_url?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_visible_homepage?: boolean | null
+          name: string
+          nationality?: string | null
+          photo_url?: string | null
+          position?: string | null
+          saves?: number | null
+          season?: string | null
+          squad?: string | null
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          appearances?: number | null
+          assists?: number | null
+          bio?: string | null
+          created_at?: string
+          cv_url?: string | null
+          date_of_birth?: string | null
+          goals?: number | null
+          height_cm?: number | null
+          highlight_video_url?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_visible_homepage?: boolean | null
+          name?: string
+          nationality?: string | null
+          photo_url?: string | null
+          position?: string | null
+          saves?: number | null
+          season?: string | null
+          squad?: string | null
+          updated_at?: string
+          weight_kg?: number | null
         }
         Relationships: []
       }
