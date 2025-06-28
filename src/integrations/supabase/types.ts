@@ -62,31 +62,37 @@ export type Database = {
           answer: string
           category: string
           created_at: string
+          created_by: string | null
           id: string
           is_active: boolean
           question: string
           sort_order: number
           updated_at: string
+          updated_by: string | null
         }
         Insert: {
           answer: string
           category?: string
           created_at?: string
+          created_by?: string | null
           id?: string
           is_active?: boolean
           question: string
           sort_order?: number
           updated_at?: string
+          updated_by?: string | null
         }
         Update: {
           answer?: string
           category?: string
           created_at?: string
+          created_by?: string | null
           id?: string
           is_active?: boolean
           question?: string
           sort_order?: number
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -485,7 +491,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      assign_admin_role_to_first_user: {
+        Args: { user_id: string }
+        Returns: undefined
+      }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "investor" | "player" | "partner"

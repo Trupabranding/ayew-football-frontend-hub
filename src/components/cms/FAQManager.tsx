@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface FAQ {
   id: string;
@@ -19,6 +20,8 @@ interface FAQ {
   sort_order: number;
   created_at: string;
   updated_at: string;
+  created_by: string | null;
+  updated_by: string | null;
 }
 
 export const FAQManager = () => {
@@ -33,6 +36,7 @@ export const FAQManager = () => {
     sort_order: 0
   });
   const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchFAQs();
@@ -60,6 +64,15 @@ export const FAQManager = () => {
   };
 
   const handleCreate = async () => {
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'You must be logged in to create FAQs',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('faqs')
@@ -79,13 +92,22 @@ export const FAQManager = () => {
       console.error('Error creating FAQ:', error);
       toast({
         title: 'Error',
-        description: 'Failed to create FAQ',
+        description: 'Failed to create FAQ. Make sure you have the required permissions.',
         variant: 'destructive'
       });
     }
   };
 
   const handleUpdate = async (id: string, updates: Partial<FAQ>) => {
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'You must be logged in to update FAQs',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('faqs')
@@ -105,13 +127,22 @@ export const FAQManager = () => {
       console.error('Error updating FAQ:', error);
       toast({
         title: 'Error',
-        description: 'Failed to update FAQ',
+        description: 'Failed to update FAQ. You can only edit FAQs you created, or you need admin permissions.',
         variant: 'destructive'
       });
     }
   };
 
   const handleDelete = async (id: string) => {
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'You must be logged in to delete FAQs',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     if (!confirm('Are you sure you want to delete this FAQ?')) return;
     
     try {
@@ -132,7 +163,7 @@ export const FAQManager = () => {
       console.error('Error deleting FAQ:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete FAQ',
+        description: 'Failed to delete FAQ. You can only delete FAQs you created, or you need admin permissions.',
         variant: 'destructive'
       });
     }
@@ -140,6 +171,12 @@ export const FAQManager = () => {
 
   const handleToggleActive = async (id: string, isActive: boolean) => {
     await handleUpdate(id, { is_active: isActive });
+  };
+
+  const canEditFAQ = (faq: FAQ) => {
+    if (!user) return false;
+    // User can edit if they created it, or if they're an admin (admin check handled by RLS)
+    return faq.created_by === user.id || user.role === 'admin';
   };
 
   if (loading) {
@@ -155,16 +192,24 @@ export const FAQManager = () => {
             Manage frequently asked questions for your website
           </p>
         </div>
-        <Button
-          onClick={() => setShowNewForm(true)}
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Add FAQ
-        </Button>
+        {user && (
+          <Button
+            onClick={() => setShowNewForm(true)}
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add FAQ
+          </Button>
+        )}
       </div>
 
-      {showNewForm && (
+      {!user && (
+        <div className="text-center py-8 text-muted-foreground">
+          <p>You must be logged in to manage FAQs.</p>
+        </div>
+      )}
+
+      {user && showNewForm && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -235,6 +280,7 @@ export const FAQManager = () => {
             key={faq.id}
             faq={faq}
             isEditing={editingId === faq.id}
+            canEdit={canEditFAQ(faq)}
             onEdit={() => setEditingId(faq.id)}
             onCancelEdit={() => setEditingId(null)}
             onUpdate={(updates) => handleUpdate(faq.id, updates)}
@@ -246,7 +292,7 @@ export const FAQManager = () => {
 
       {faqs.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <p>No FAQs found. Create your first FAQ to get started.</p>
+          <p>No FAQs found. {user ? 'Create your first FAQ to get started.' : 'Please log in to manage FAQs.'}</p>
         </div>
       )}
     </div>
@@ -256,6 +302,7 @@ export const FAQManager = () => {
 interface FAQCardProps {
   faq: FAQ;
   isEditing: boolean;
+  canEdit: boolean;
   onEdit: () => void;
   onCancelEdit: () => void;
   onUpdate: (updates: Partial<FAQ>) => void;
@@ -266,6 +313,7 @@ interface FAQCardProps {
 const FAQCard = ({
   faq,
   isEditing,
+  canEdit,
   onEdit,
   onCancelEdit,
   onUpdate,
@@ -308,28 +356,34 @@ const FAQCard = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Switch
-              checked={faq.is_active}
-              onCheckedChange={onToggleActive}
-            />
-            {isEditing ? (
+            {canEdit && (
+              <Switch
+                checked={faq.is_active}
+                onCheckedChange={onToggleActive}
+              />
+            )}
+            {canEdit && (
               <>
-                <Button size="sm" onClick={handleSave} className="gap-1">
-                  <Save className="h-3 w-3" />
-                  Save
-                </Button>
-                <Button size="sm" variant="outline" onClick={onCancelEdit}>
-                  <X className="h-3 w-3" />
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button size="sm" variant="outline" onClick={onEdit}>
-                  <Edit className="h-3 w-3" />
-                </Button>
-                <Button size="sm" variant="destructive" onClick={onDelete}>
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+                {isEditing ? (
+                  <>
+                    <Button size="sm" onClick={handleSave} className="gap-1">
+                      <Save className="h-3 w-3" />
+                      Save
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={onCancelEdit}>
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button size="sm" variant="outline" onClick={onEdit}>
+                      <Edit className="h-3 w-3" />
+                    </Button>
+                    <Button size="sm" variant="destructive" onClick={onDelete}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </>
+                )}
               </>
             )}
           </div>
