@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import AOS from 'aos';
@@ -10,14 +9,10 @@ interface FAQ {
   question: string;
   answer: string;
   category: string;
-  is_active: boolean;
-  sort_order: number;
 }
 
 const FAQSection = () => {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [openFAQ, setOpenFAQ] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     AOS.init({
@@ -25,25 +20,41 @@ const FAQSection = () => {
       once: true,
       offset: 100,
     });
-    fetchFAQs();
   }, []);
 
-  const fetchFAQs = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('faqs')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
-      
-      if (error) throw error;
-      setFaqs(data || []);
-    } catch (error) {
-      console.error('Error fetching FAQs:', error);
-    } finally {
-      setLoading(false);
+  // Static FAQ data
+  const faqs: FAQ[] = [
+    {
+      id: '1',
+      question: 'What age groups do you accept at Mafarah Ayew Football Academy?',
+      answer: 'We accept young athletes between the ages of 8-18 years old. Our programs are designed to cater to different skill levels and age groups to ensure proper development.',
+      category: 'enrollment'
+    },
+    {
+      id: '2',
+      question: 'What facilities are available at the academy?',
+      answer: 'Our state-of-the-art facilities include FIFA-standard pitches, modern training equipment, fitness centers, medical facilities, and comfortable accommodation for residential programs.',
+      category: 'facilities'
+    },
+    {
+      id: '3',
+      question: 'Do you provide academic education alongside football training?',
+      answer: 'Yes, we believe in holistic development. Our programs combine intensive football training with quality academic education to prepare our players for success both on and off the pitch.',
+      category: 'general'
+    },
+    {
+      id: '4',
+      question: 'How can I apply to join the academy?',
+      answer: 'You can apply by contacting us through our website or visiting our facilities. We conduct regular trials and assessments to identify talented young players.',
+      category: 'enrollment'
+    },
+    {
+      id: '5',
+      question: 'What support does the NGO sporting club provide?',
+      answer: 'Our NGO sporting club provides free training and equipment to underprivileged youth, organizes community tournaments, and creates safe spaces for young people to develop their athletic abilities.',
+      category: 'community'
     }
-  };
+  ];
 
   const toggleFAQ = (id: string) => {
     setOpenFAQ(openFAQ === id ? null : id);
@@ -56,25 +67,6 @@ const FAQSection = () => {
     acc[faq.category].push(faq);
     return acc;
   }, {} as Record<string, FAQ[]>);
-
-  if (loading) {
-    return (
-      <section className="py-12 md:py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-300 rounded w-1/3 mx-auto mb-4"></div>
-              <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (faqs.length === 0) {
-    return null;
-  }
 
   return (
     <section id="faq" className="py-12 md:py-20 bg-gray-50">
