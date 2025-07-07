@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Trophy, Users, Heart, Target } from 'lucide-react';
 import { useEffect } from 'react';
@@ -54,7 +55,7 @@ const AboutSection = () => {
           <div data-aos="fade-right" data-aos-delay="200">
             <div className="mb-6">
               <OptimizedImage
-                src="https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/about/training-ground.jpg"
+                src="https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/mafarah/landing/training-ground.jpg"
                 fallbackSrc="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80&w=600"
                 alt="Mafarah Ayew Football Academy training ground with young players"
                 className="w-full h-64 md:h-80 rounded-lg shadow-lg"
@@ -82,7 +83,7 @@ const AboutSection = () => {
           <div data-aos="fade-left" data-aos-delay="400">
             <div className="mb-6">
               <OptimizedImage
-                src="https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/about/community-program.jpg"
+                src="https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/mafarah/landing/community-program.jpg"
                 fallbackSrc="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=600"
                 alt="Community outreach program with children participating in sports activities"
                 className="w-full h-64 md:h-80 rounded-lg shadow-lg"
