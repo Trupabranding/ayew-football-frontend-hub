@@ -3,7 +3,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, User } from 'lucide-react';
 import { useEffect } from 'react';
-import OptimizedImage from './OptimizedImage';
 import AOS from 'aos';
 
 const NewsSection = () => {
@@ -21,8 +20,7 @@ const NewsSection = () => {
       id: 1,
       title: "Academy Wins Regional Youth Championship",
       excerpt: "Our U-17 team secured a decisive 3-1 victory in the final match, showcasing exceptional teamwork and skill development.",
-      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/mafarah/landing/championship-win.jpg",
-      fallback: "https://images.unsplash.com/photo-1580722316149-95c2b0c64b50?auto=format&fit=crop&q=80&w=600",
+      image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80&w=600",
       date: "2024-05-30",
       author: "Coach Williams",
       category: "Match Report"
@@ -31,8 +29,7 @@ const NewsSection = () => {
       id: 2,
       title: "New Training Facility Opens",
       excerpt: "State-of-the-art training complex with modern equipment and FIFA-standard pitches now available for all academy programs.",
-      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/mafarah/landing/new-facility.jpg",
-      fallback: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=600",
+      image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=600",
       date: "2024-05-25",
       author: "Academy Director",
       category: "Facility News"
@@ -41,8 +38,7 @@ const NewsSection = () => {
       id: 3,
       title: "Community Outreach Program Launch",
       excerpt: "Our NGO sporting club initiates new community programs, providing free training and equipment to underprivileged youth.",
-      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/mafarah/landing/outreach-launch.jpg",
-      fallback: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80&w=600",
+      image: "https://images.unsplash.com/photo-1594736797933-d0d6147d9c95?auto=format&fit=crop&q=80&w=600",
       date: "2024-05-20",
       author: "NGO Coordinator",
       category: "Community"
@@ -66,11 +62,10 @@ const NewsSection = () => {
           {news.map((article, index) => (
             <Card key={article.id} className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer" data-aos="fade-up" data-aos-delay={200 + index * 100}>
               <div className="relative">
-                <OptimizedImage
+                <img
                   src={article.image}
-                  fallbackSrc={article.fallback}
                   alt={article.title}
-                  className="w-full h-48 rounded-t-lg"
+                  className="w-full h-48 rounded-t-lg object-cover"
                 />
                 <div className="absolute top-4 left-4">
                   <span className="bg-wine-red text-white px-2 py-1 text-xs font-semibold rounded">

@@ -2,7 +2,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Trophy, Users, Heart, Target } from 'lucide-react';
 import { useEffect } from 'react';
-import OptimizedImage from './OptimizedImage';
 import AOS from 'aos';
 
 const AboutSection = () => {
@@ -54,11 +53,10 @@ const AboutSection = () => {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-12 md:mb-16">
           <div data-aos="fade-right" data-aos-delay="200">
             <div className="mb-6">
-              <OptimizedImage
-                src="https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/mafarah/landing/training-ground.jpg"
-                fallbackSrc="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80&w=600"
-                alt="Mafarah Ayew Football Academy training ground with young players"
-                className="w-full h-64 md:h-80 rounded-lg shadow-lg"
+              <img
+                src="https://images.unsplash.com/photo-1594736797933-d0d6147d9c95?auto=format&fit=crop&q=80&w=600"
+                alt="Young African children playing football together"
+                className="w-full h-64 md:h-80 rounded-lg shadow-lg object-cover"
               />
             </div>
             <h3 className="text-2xl md:text-3xl font-bold text-secondary mb-4 md:mb-6">Football Academy</h3>
@@ -82,11 +80,10 @@ const AboutSection = () => {
 
           <div data-aos="fade-left" data-aos-delay="400">
             <div className="mb-6">
-              <OptimizedImage
-                src="https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/mafarah/landing/community-program.jpg"
-                fallbackSrc="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=600"
-                alt="Community outreach program with children participating in sports activities"
-                className="w-full h-64 md:h-80 rounded-lg shadow-lg"
+              <img
+                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=600"
+                alt="Community sports program with African children"
+                className="w-full h-64 md:h-80 rounded-lg shadow-lg object-cover"
               />
             </div>
             <h3 className="text-2xl md:text-3xl font-bold text-secondary mb-4 md:mb-6">NGO Sporting Club</h3>
