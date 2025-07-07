@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from '@/components/ui/carousel';
 import { useState, useEffect } from 'react';
+import OptimizedImage from './OptimizedImage';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -22,35 +23,40 @@ const HeroSection = () => {
       title: "Elite Football Academy",
       subtitle: "Professional Training Program",
       description: "Developing the next generation of football stars through world-class coaching, modern facilities, and comprehensive player development programs.",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=1920",
+      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/hero/training-session-1.jpg",
+      fallback: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=1920",
       cta: "Join Academy"
     },
     {
       title: "Smart Investment Hub",
       subtitle: "Partner With Champions",
       description: "Join our investment platform to support talented young players while earning attractive returns through strategic football development investments.",
-      image: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&q=80&w=1920",
+      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/hero/academy-facilities.jpg",
+      fallback: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&q=80&w=1920",
       cta: "Explore Investments"
     },
     {
       title: "Community Empowerment",
       subtitle: "NGO & Social Impact",
       description: "Making a difference in Ghanaian communities through sports education, youth mentorship, and sustainable development programs.",
-      image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=1920",
+      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/hero/community-outreach.jpg",
+      fallback: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=1920",
       cta: "Make a Donation"
     },
     {
       title: "Championship Matches",
       subtitle: "Competitive Excellence",
       description: "Experience thrilling football action as our academy teams compete in regional and national tournaments, showcasing emerging talent.",
-      image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1920",
+      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/hero/match-action.jpg",
+      fallback: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1920",
       cta: "View Matches"
     },
     {
       title: "Success Stories",
       subtitle: "Latest Updates",
       description: "Follow inspiring journeys of our players, academy achievements, and breakthrough moments that define our commitment to excellence.",
-      image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80&w=1920",
+      image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/hero/success-stories.jpg",
+      fallback: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80&w=1920",
       cta: "Read News"
     }
   ];
@@ -112,10 +118,13 @@ const HeroSection = () => {
               <div className="relative min-h-screen flex items-center">
                 {/* Enhanced dark overlay for better text visibility */}
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10"></div>
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
-                  style={{ backgroundImage: `url('${slide.image}')` }}
-                ></div>
+                <OptimizedImage
+                  src={slide.image}
+                  fallbackSrc={slide.fallback}
+                  alt={`${slide.title} - Mafarah Ayew Football Academy`}
+                  className="absolute inset-0 transition-all duration-1000"
+                  priority={index === 0}
+                />
                 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 z-20 w-full">
                   <div className="max-w-2xl md:max-w-3xl animate-fade-in">
