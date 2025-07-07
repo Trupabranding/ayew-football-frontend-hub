@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from '@/components/ui/carousel';
 import { useState, useEffect } from 'react';
@@ -21,7 +20,7 @@ const HeroSection = () => {
   const slides = [
     {
       title: "Elite Football Academy",
-      subtitle: "Professional Training Program",
+      subtitle: "Professional Training Program", 
       description: "Developing the next generation of football stars through world-class coaching, modern facilities, and comprehensive player development programs.",
       image: "https://intoowqkpggebtyqtggi.supabase.co/storage/v1/object/public/academy-images/hero/training-session-1.jpg",
       fallback: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=1920",

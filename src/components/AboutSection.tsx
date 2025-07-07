@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Trophy, Users, Heart, Target } from 'lucide-react';
 import { useEffect } from 'react';
@@ -23,7 +22,7 @@ const AboutSection = () => {
     },
     {
       icon: Users,
-      title: "Community",
+      title: "Community", 
       description: "Building strong connections and supporting our local community through sports."
     },
     {

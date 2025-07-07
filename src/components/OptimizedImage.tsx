@@ -26,13 +26,19 @@ const OptimizedImage = ({
   const [imageSrc, setImageSrc] = useState(src);
 
   const handleLoad = () => {
+    console.log('Image loaded successfully:', imageSrc);
     setIsLoading(false);
+    setHasError(false);
   };
 
   const handleError = () => {
+    console.log('Image failed to load:', imageSrc);
     setHasError(true);
     setIsLoading(false);
+    
+    // If the current source failed and it's not already the fallback, try the fallback
     if (fallbackSrc && imageSrc !== fallbackSrc) {
+      console.log('Switching to fallback image:', fallbackSrc);
       setImageSrc(fallbackSrc);
       setHasError(false);
       setIsLoading(true);
@@ -60,7 +66,7 @@ const OptimizedImage = ({
         onLoad={handleLoad}
         onError={handleError}
       />
-      {hasError && (
+      {hasError && imageSrc === fallbackSrc && (
         <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
           <p className="text-gray-500 text-sm">Image unavailable</p>
         </div>
